@@ -1,9 +1,9 @@
 #ifndef HAS_TRIE
 #define HAS_TRIE
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 typedef struct Node Node;
 typedef struct Trie Trie;

@@ -1,4 +1,4 @@
-#include "trie.h"
+#include "scrabble.h"
 
 int main(void) {
         Trie *trie;
