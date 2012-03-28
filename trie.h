@@ -25,6 +25,7 @@ void node_free(Node *np);
 
 Trie *trie_new(void);
 Node *trie_lookup(Trie *trie, char *s, char **si);
+int trie_has(Trie *trie, char *s);
 Node *trie_insert(Trie *trie, char *s);
 int trie_load(Trie *trie, char *dict_path);
 void trie_free(Trie *trie);

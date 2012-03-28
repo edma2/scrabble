@@ -13,8 +13,6 @@ int main(void) {
         printf("%d words loaded\n", nwords);
         printf("size: %u MB\n", trie->size * sizeof(Node)/1000000);
 
-        trie_free(trie);
-
         char *board = "...............\
 ...............\
 ...............\
@@ -23,7 +21,7 @@ int main(void) {
 ...............\
 ...............\
 ..r............\
-..a............\
+..at...........\
 ..t............\
 ...............\
 ...............\
@@ -31,7 +29,19 @@ int main(void) {
 ...............\
 ...............";
 
-        board_print(board);
+        do_crosschecks(trie, board, 6);
+        int i, j;
+        for (i = 0; i < SIZE; i++) {
+                /* Not interesting */
+                if (crosschecks[i] == ~0)
+                        continue;
+                for (j = 0; j < SIZE; j++) {
+                        if (crosschecks[i] & (1<<j))
+                                printf("%c ,", letters[j]);
+                }
+        }
+
+        trie_free(trie);
 
         return 0;
 }

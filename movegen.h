@@ -5,6 +5,14 @@
 
 #define SIZE 15
 
-void board_print(const char *board);
+extern int crosschecks[SIZE];
+extern const char *letters;
+
+void do_crosschecks(Trie *trie, char *board, int row);
+char at_loc(char *board, int row, int col);
+int loc_in_bounds(int row, int col);
+int loc_has_tile(char *board, int row, int col);
+int valid_pivots(Trie *trie, char *prefix, char *suffix);
+void board_print(char *board);
 
 #endif
