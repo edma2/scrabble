@@ -1,5 +1,7 @@
 #include "movegen.h"
 
+static int valid_word(char *word);
+
 WordList *wordlist_new(void) {
         WordList *wl;
 
@@ -64,7 +66,7 @@ int loc_adjacent_tile(char *board, int row, int col) {
 }
 
 /* Fills up crosschecks array for @jth row of @board */
-void do_crosschecks(Trie *trie, char *board, int row) {
+void do_crosschecks(char *board, int row) {
         char prefix[SIZE];
         char suffix[SIZE];
         int col, i, j;
@@ -94,12 +96,16 @@ void do_crosschecks(Trie *trie, char *board, int row) {
                 if (!suffix[0] && !prefix[0])
                         crosschecks[col] = ~0; /* unconstrained */
                 else
-                        crosschecks[col] = valid_pivots(trie, prefix, suffix);
+                        crosschecks[col] = valid_pivots(prefix, suffix);
         }
 }
 
+static int valid_word(char *word) {
+        return trie_has(lexicon, word);
+}
+
 /* Returns valid pivots of prefix + suffix as a bit vector */
-int valid_pivots(Trie *trie, char *prefix, char *suffix) {
+int valid_pivots(char *prefix, char *suffix) {
         int i, pivot, pivots;
         char word[SIZE];
 
@@ -114,7 +120,7 @@ int valid_pivots(Trie *trie, char *prefix, char *suffix) {
 
         for (pivots = i = 0; i < strlen(letters); i++) {
                 word[pivot] = letters[i];
-                if (trie_has(trie, word))
+                if (valid_word(word))
                         pivots |= 1<<i;
         }
         return pivots;

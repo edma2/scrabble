@@ -5,6 +5,8 @@
 
 #include "trie.h"
 
+Trie *lexicon;
+
 /* Returns a new Trie or NULL on failure */
 Trie *trie_new(void) {
         Trie *trie;

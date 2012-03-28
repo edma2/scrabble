@@ -18,6 +18,8 @@ struct Node {
         int end_of_word;
 };
 
+extern Trie *lexicon;
+
 Node *node_new(void);
 Node *node_child(Node *np, char c);
 Node *node_add_child(Node *np, char c);

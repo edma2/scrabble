@@ -24,7 +24,7 @@ Word *word_new(char *letters);
 Word *wordlist_add(WordList *ml, char *letters);
 
 void do_anchors(char *board, int row);
-void do_crosschecks(Trie *trie, char *board, int row);
+void do_crosschecks(char *board, int row);
 
 char at_loc(char *board, int row, int col);
 
@@ -32,7 +32,7 @@ int loc_in_bounds(int row, int col);
 int loc_has_tile(char *board, int row, int col);
 int loc_adjacent_tile(char *board, int row, int col);
 
-int valid_pivots(Trie *trie, char *prefix, char *suffix);
+int valid_pivots(char *prefix, char *suffix);
 
 void board_print(char *board);
 
