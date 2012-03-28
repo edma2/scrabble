@@ -1,7 +1,5 @@
 #include "wordlist.h"
 
-Word *wordlist = NULL;
-
 static Word *word_new(char *letters, int row, int col) {
         Word *word;
 
@@ -15,30 +13,27 @@ static Word *word_new(char *letters, int row, int col) {
         return word;
 }
 
-void wordlist_clear(void) {
+void wordlist_free(Word *wl) {
         Word *next;
 
-        for (; wordlist != NULL; wordlist = next) {
-                next = wordlist->next;
-                free(wordlist);
+        for (; wl != NULL; wl = next) {
+                next = wl->next;
+                free(wl);
         }
-        wordlist = NULL;
 }
 
-Word *wordlist_add(char *word, int row, int col) {
+Word *wordlist_add(Word **wl, char *word, int row, int col) {
         Word *wp;
 
         wp = word_new(word, row, col);
         if (wp == NULL)
                 return NULL;
-        wp->next = wordlist;
-        wordlist = wp;
+        wp->next = *wl;
+        *wl = wp;
         return wp;
 }
 
-void wordlist_output(FILE *out) {
-        Word *wp;
-
-        for (wp = wordlist; wp != NULL; wp = wp->next)
-                fprintf(out, "(%d, %d): %s\n", wp->col, wp->row, wp->letters);
+void wordlist_output(Word *wl, FILE *out) {
+        for (; wl != NULL; wl = wl->next)
+                fprintf(out, "(%d, %d): %s\n", wl->col, wl->row, wl->letters);
 }

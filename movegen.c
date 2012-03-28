@@ -1,78 +1,87 @@
 #include "movegen.h"
 
-static char *letters = "abcdefghijklmnopqrstuvwxyz";
+static void extend_right(Word **legalwords, Board board, char *partial,
+                int row, int col, int rack[26], int crosschecks[SIZE],
+                                                Node *np);
 
-static void get_anchors(Board board, int row, int anchors[SIZE]);
-static void get_crosschecks(Board board, int row, int crosschecks[SIZE]);
-static void get_leftparts(Board board, int row, int rack[26]);
+static void get_leftparts(Word **leftparts, Board board, int row,
+                int rack[26]);
 
-static void extend_right(Board board, char *partial, int row, int col, int
-                rack[26], int crosschecks[SIZE], Node *np);
+static void leftpartsgen(Word **leftparts, Node *np, int limit, int rack[26],
+                int row, int col);
 
-static void leftpartsgen(Node *np, int limit, int rack[26], int row, int col);
 static int bit(int word, int n);
-
 static int rack_count(int rack[26], char c);
-static void put_on_rack(int rack[26], char c);
 static void take_off_rack(int rack[26], char c);
+static void put_on_rack(int rack[26], char c);
+static void get_anchors(Board board, int row, int anchors[SIZE]);
+static int pivots(char *prefix, char *suffix);
+static void get_crosschecks(Board board, int row, int crosschecks[SIZE]);
+
+static char *letters = "abcdefghijklmnopqrstuvwxyz";
 
 void movegen(Board board, int row, int rack[26]) {
         int crosschecks[SIZE];
-        Word *wp;
+        Word *leftparts = NULL;
+        Word *legalwords = NULL;
         Node *np;
+        Word *wp;
 
         get_crosschecks(board, row, crosschecks);
-        get_leftparts(board, row, rack);
-        for (wp = wordlist; wp != NULL; wp = wp->next) {
+        get_leftparts(&leftparts, board, row, rack);
+        for (wp = leftparts; wp != NULL; wp = wp->next) {
                 np = trie_lookup(lexicon, wp->letters, NULL);
-                extend_right(board, wp->letters, wp->row, wp->col, rack,
-                                crosschecks, np);
+                extend_right(&legalwords, board, wp->letters, wp->row, wp->col,
+                                rack, crosschecks, np);
         }
+        wordlist_output(legalwords, stdout);
+        wordlist_free(leftparts);
+        wordlist_free(legalwords);
 }
 
-static void extend_right(Board board, char *partial, int row, int col,
-                        int rack[26], int crosschecks[SIZE], Node *np) {
+static void extend_right(Word **legalwords, Board board, char *partial,
+                int row, int col, int rack[26], int crosschecks[SIZE],
+                                                Node *np) {
         char c;
         int len;
 
         if (!filled(board, row, col)) {
                 if (np->end_of_word) {
-                        printf("Legal move: %s\n", partial);
-                } else {
-                        for (c = 'a'; c <= 'z'; c++) {
-                                if (node_child(np, c) == NULL)
-                                        continue;
-                                if (rack_count(rack, c)
-                                        && (bit(crosschecks[col], c-'a'))) {
-                                        take_off_rack(rack, c);
-                                        len = strlen(partial);
-                                        partial[len] = c;
-                                        partial[len+1] = '\0';
-                                        extend_right(board, partial, row,
-                                                        col+1, rack,
-                                                        crosschecks,
-                                                        node_child(np, c));
-                                        partial[len] = '\0';
-                                        put_on_rack(rack, c);
-                                }
+                        wordlist_add(legalwords, partial, row, col);
+                }
+                for (c = 'a'; c <= 'z'; c++) {
+                        if (node_child(np, c) == NULL)
+                                continue;
+                        if (rack_count(rack, c)
+                                && (bit(crosschecks[col], c-'a'))) {
+                                take_off_rack(rack, c);
+                                len = strlen(partial);
+                                partial[len] = c;
+                                partial[len+1] = '\0';
+                                extend_right(legalwords, board, partial, row,
+                                                col+1, rack, crosschecks,
+                                                node_child(np, c));
+                                partial[len] = '\0';
+                                put_on_rack(rack, c);
                         }
                 }
 
         } else {
                 c = board[row][col];
-                if (node_child(np, c)) {
-                        len = strlen(partial);
-                        partial[len] = c;
-                        partial[len+1] = '\0';
-                        extend_right(board, partial, row, col+1, rack,
-                                        crosschecks, node_child(np, c));
-                        partial[len] = '\0';
-                        put_on_rack(rack, c);
-                }
+                if (!node_child(np, c))
+                        return;
+                len = strlen(partial);
+                partial[len] = c;
+                partial[len+1] = '\0';
+                extend_right(legalwords, board, partial, row, col+1, rack,
+                                crosschecks, node_child(np, c));
+                partial[len] = '\0';
+                put_on_rack(rack, c);
         }
 }
 
-static void get_leftparts(Board board, int row, int rack[26]) {
+static void get_leftparts(Word **leftparts, Board board, int row,
+                                int rack[26]) {
         int anchors[SIZE];
         int col, i;
         char leftpart[SIZE+1];
@@ -85,12 +94,13 @@ static void get_leftparts(Board board, int row, int rack[26]) {
                         for (i = col-1; i >= 0 && filled(board, row, i); i--)
                                 ;
                         get_acrossword(board, row, i+1, leftpart);
-                        wordlist_add(leftpart, row, i+1);
+                        wordlist_add(leftparts, leftpart, row, col);
                 } else {
                         int nonanch = 0;
                         for (i = col-1; i >= 0 && !anchors[i]; i--)
                                 nonanch++;
-                        leftpartsgen(lexicon->root, nonanch, rack, row, i+1);
+                        leftpartsgen(leftparts, lexicon->root, nonanch, rack,
+                                        row, col);
                 }
         }
 }
@@ -111,13 +121,14 @@ static void put_on_rack(int rack[26], char c) {
         rack[c-'a']++;
 }
 
-static void leftpartsgen(Node *np, int limit, int rack[26], int row, int col) {
+static void leftpartsgen(Word **leftparts, Node *np, int limit, int rack[26],
+                int row, int col) {
         static char partial[SIZE+1];
         char c;
         int len;
 
         if (!limit) {
-                wordlist_add(partial, row, col);
+                wordlist_add(leftparts, partial, row, col);
                 return;
         }
         for (c = 'a'; c <= 'z'; c++) {
@@ -127,7 +138,7 @@ static void leftpartsgen(Node *np, int limit, int rack[26], int row, int col) {
                 len = strlen(partial);
                 partial[len] = c;
                 partial[len+1] = '\0';
-                leftpartsgen(node_child(np, c), limit-1, rack, row, col);
+                leftpartsgen(leftparts, node_child(np, c), limit-1, rack, row, col);
                 partial[len] = '\0';
                 put_on_rack(rack, c);
         }
