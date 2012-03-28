@@ -10,18 +10,18 @@ static void leftpartsgen(Node *np, int limit, int rack[26], int row, int col);
 static int bit(int word, int n);
 
 void movegen(Board board, int row, int rack[26]) {
+        int crosschecks[SIZE];
+
+        get_crosschecks(board, row, crosschecks);
         get_leftparts(board, row, rack);
 }
 
 static void get_leftparts(Board board, int row, int rack[26]) {
         int anchors[SIZE];
-        int crosschecks[SIZE];
         int col, i;
         char leftpart[SIZE+1];
 
         get_anchors(board, row, anchors);
-        get_crosschecks(board, row, crosschecks);
-
         for (col = 0; col < SIZE; col++) {
                 if (!anchors[col])
                         continue;

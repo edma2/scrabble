@@ -28,7 +28,9 @@ int main(void) {
                 return -1;
         }
 
-        movegen(board, 8, rack);
+        int i;
+        for (i = 0; i < SIZE; i++)
+                movegen(board, i, rack);
         wordlist_output(stdout);
 
         lexicon_free();
