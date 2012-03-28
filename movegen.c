@@ -1,15 +1,21 @@
 #include "movegen.h"
 
 static int valid_word(char *word);
+const char *letters = "abcdefghijklmnopqrstuvwxyz";
+
+/* Each element of this array represents the crosscheck for a square of some
+ * row. Each crosscheck is represented as a bit vector mapped over the @letters
+ * string above. If bit @j is on, then the @letters[@j] is in the set. */
+int crosschecks[SIZE];
+
+int anchors[SIZE];
+WordList left_parts = {.head=NULL};
 
 /*
- * @wl          WordList containing valid partials
- * @partial     current partial for this invocation
  * @np          Trie node pointer
  * @limit       how long the partial can be
  * @tiles       each element is the count for that letter
  */
-WordList left_parts = {.head=NULL};
 void do_left_parts(Node *np, int limit, int tiles[26]) {
         char c;
         static char partial[SIZE+1];
@@ -74,15 +80,6 @@ Word *wordlist_add(WordList *wl, char *letters) {
         wl->head = word;
         return word;
 }
-
-const char *letters = "abcdefghijklmnopqrstuvwxyz";
-
-/* Each element of this array represents the crosscheck for a square of some
- * row. Each crosscheck is represented as a bit vector mapped over the @letters
- * string above. If bit @j is on, then the @letters[@j] is in the set. */
-int crosschecks[SIZE];
-
-int anchors[SIZE];
 
 void do_anchors(char *board, int row) {
         int col;
