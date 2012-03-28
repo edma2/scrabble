@@ -44,30 +44,9 @@ static void extend_right(Word **legalwords, Board board, char *partial,
         char c;
         int len;
 
-        if (!filled(board, row, col)) {
-                if (np->end_of_word) {
-                        wordlist_add(legalwords, partial, row, col);
-                }
-                for (c = 'a'; c <= 'z'; c++) {
-                        if (node_child(np, c) == NULL)
-                                continue;
-                        if (rack_count(rack, c)
-                                && (bit(crosschecks[col], c-'a'))) {
-                                take_off_rack(rack, c);
-                                len = strlen(partial);
-                                partial[len] = c;
-                                partial[len+1] = '\0';
-                                extend_right(legalwords, board, partial, row,
-                                                col+1, rack, crosschecks,
-                                                node_child(np, c));
-                                partial[len] = '\0';
-                                put_on_rack(rack, c);
-                        }
-                }
-
-        } else {
+        if (filled(board, row, col)) {
                 c = board[row][col];
-                if (!node_child(np, c))
+                if (node_child(np, c) == NULL)
                         return;
                 len = strlen(partial);
                 partial[len] = c;
@@ -76,6 +55,24 @@ static void extend_right(Word **legalwords, Board board, char *partial,
                                 crosschecks, node_child(np, c));
                 partial[len] = '\0';
                 put_on_rack(rack, c);
+                return;
+        }
+        if (np->end_of_word)
+                wordlist_add(legalwords, partial, row, col);
+        for (c = 'a'; c <= 'z'; c++) {
+                if (node_child(np, c) == NULL)
+                        continue;
+                if (rack_count(rack, c)
+                        && (bit(crosschecks[col], c-'a'))) {
+                        take_off_rack(rack, c);
+                        len = strlen(partial);
+                        partial[len] = c;
+                        partial[len+1] = '\0';
+                        extend_right(legalwords, board, partial, row, col+1,
+                                        rack, crosschecks, node_child(np, c));
+                        partial[len] = '\0';
+                        put_on_rack(rack, c);
+                }
         }
 }
 

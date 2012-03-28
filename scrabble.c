@@ -33,8 +33,9 @@ int main(void) {
 
         legalwords = movegen(board, 10, rack);
         wordlist_output(legalwords, stdout);
-
         wordlist_free(legalwords);
+
         lexicon_free();
+
         return 0;
 }
