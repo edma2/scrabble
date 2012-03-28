@@ -34,7 +34,7 @@ int main(void) {
         int i;
         for (i = 0; i < SIZE; i++) {
                 do_crosschecks(trie, board, i);
-                anchors(board, i);
+                do_anchors(board, i);
         }
 
         trie_free(trie);
