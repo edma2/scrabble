@@ -1,9 +1,10 @@
 #ifndef HAS_SCRABBLE
 #define HAS_SCRABBLE
 
-#include "trie.h"
+#include <stdio.h>
+#include "board.h"
+#include "wordlist.h"
 #include "movegen.h"
-
-#define BOARD_SIZE 16
+#include "lexicon.h"
 
 #endif

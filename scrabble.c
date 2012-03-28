@@ -1,49 +1,38 @@
 #include "scrabble.h"
 
-char *board = "...............\
-...............\
-...............\
-...............\
-...............\
-...............\
-...............\
-..r............\
-..at...........\
-..t............\
-...............\
-...............\
-...............\
-...............\
-...............";
+Board board = {
+"...............",
+"...............",
+"...............",
+"...............",
+"...............",
+"...............",
+"...............",
+"..r............",
+"..at...........",
+"..t............",
+"...............",
+"...............",
+"...............",
+"...............",
+"..............."};
 
 int main(void) {
-        int nwords;
+        int rack[26] = {0};
+        rack['a'-'a'] = 1;
+        rack['r'-'a'] = 2;
+        rack['t'-'a'] = 1;
 
-        lexicon = trie_new();
-        nwords = trie_load(lexicon, "dict.txt");
-        if (nwords < 0) {
-                fprintf(stderr, "Failed to load dictionary!\n");
+        if (lexicon_init("dict.txt") < 0) {
+                perror("lexicon_init()");
                 return -1;
         }
 
-        int i;
-        for (i = 0; i < SIZE; i++) {
-                do_crosschecks(board, i);
-                do_anchors(board, i);
-        }
+        movegen(board, 5, rack);
+        wordlist_output(stdout);
 
-        int tiles[26] = {0};
-        tiles['a'-'a'] = 1;
-        tiles['r'-'a'] = 2;
-        tiles['t'-'a'] = 1;
-        do_left_parts(lexicon->root, 3, tiles);
-
-        Word *wp;
-        for (wp = left_parts.head; wp != NULL; wp = wp->next)
-                printf("%s\n", wp->letters);
-
-        trie_free(lexicon);
-        wordlist_free(&left_parts);
+        lexicon_free();
+        wordlist_clear();
 
         return 0;
 }

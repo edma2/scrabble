@@ -1,11 +1,4 @@
-/*
- * Simple Trie Implementation
- * Author: Eugene Ma (edma2)
- */
-
 #include "trie.h"
-
-Trie *lexicon;
 
 /* Returns a new Trie or NULL on failure */
 Trie *trie_new(void) {
@@ -88,30 +81,4 @@ Node *trie_insert(Trie *trie, char *s) {
         }
         np->end_of_word = 1;
         return np;
-}
-
-/* Returns nonzero if TRIE contains S, zero otherwise */
-int trie_has(Trie *trie, char *s) {
-        char *si;
-        Node *np;
-
-        np = trie_lookup(trie, s, &si);
-        return np->end_of_word && *si == '\0';
-}
-
-/* Loads TRIE with words specified in file located at DICT_PATH
- * Returns words loaded on success, and signed value on failure. */
-int trie_load(Trie *trie, char *dict_path) {
-        FILE *fp;
-        int nwords;
-        char buf[1024];
-
-        fp = fopen(dict_path, "r");
-        for (nwords = 0; fgets(buf, sizeof(buf), fp) != NULL; nwords++) {
-                buf[strlen(buf)-1] = '\0'; /* chomp newline */
-                if (trie_insert(trie, buf) == NULL)
-                        return -1;
-        }
-        fclose(fp);
-        return nwords;
 }
