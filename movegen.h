@@ -16,24 +16,25 @@ struct WordList {
         Word *head;
 };
 
-extern int crosschecks[SIZE];
-extern const char *letters;
-
 WordList *wordlist_new(void);
 Word *word_new(char *letters);
 Word *wordlist_add(WordList *ml, char *letters);
 
+extern const char *letters;
+
+extern int crosschecks[SIZE];
+extern int anchors[SIZE];
+extern WordList left_parts;
+
 void do_anchors(char *board, int row);
 void do_crosschecks(char *board, int row);
+void do_left_parts(Node *np, int limit, int tiles[26]);
 
 char at_loc(char *board, int row, int col);
-
 int loc_in_bounds(int row, int col);
 int loc_has_tile(char *board, int row, int col);
 int loc_adjacent_tile(char *board, int row, int col);
 
 int valid_pivots(char *prefix, char *suffix);
-
-void board_print(char *board);
 
 #endif

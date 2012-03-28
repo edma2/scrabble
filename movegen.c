@@ -2,6 +2,46 @@
 
 static int valid_word(char *word);
 
+/*
+ * @wl          WordList containing valid partials
+ * @partial     current partial for this invocation
+ * @np          Trie node pointer
+ * @limit       how long the partial can be
+ * @tiles       each element is the count for that letter
+ */
+WordList left_parts = {.head=NULL};
+void do_left_parts(Node *np, int limit, int tiles[26]) {
+        char c;
+        static char partial[SIZE+1];
+
+        if (!limit) {
+                wordlist_add(&left_parts, partial);
+                return;
+        }
+
+        /* For each edge in trie node */
+        for (c = 'a'; c <= 'z'; c++) {
+                int len;
+
+                if (node_child(np, c) == NULL || !tiles[c-'a'])
+                        continue;
+
+                /* Take out a tile */
+                tiles[c-'a']--;
+
+                /* Stick it to the end of partial */
+                len = strlen(partial);
+                partial[len] = c;
+                partial[len+1] = '\0';
+
+                do_left_parts(node_child(np, c), limit-1, tiles);
+
+                /* Undo everything */
+                partial[len] = '\0';
+                tiles[c-'a']++;
+        }
+}
+
 WordList *wordlist_new(void) {
         WordList *wl;
 
@@ -139,14 +179,4 @@ char at_loc(char *board, int row, int col) {
 int loc_has_tile(char *board, int row, int col) {
         char c = at_loc(board, row, col);
         return c >= 'a' && c <= 'z';
-}
-
-void board_print(char *board) {
-        int i, j;
-
-        for (i = 0; i < SIZE; i++) {
-                for (j = 0; j < SIZE; j++)
-                        printf("%c", at_loc(board, i, j));
-                printf("\n");
-        }
 }
