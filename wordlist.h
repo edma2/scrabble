@@ -14,6 +14,8 @@ struct Word {
         Word *next;
 };
 
+extern Word *wordlist;
+
 void wordlist_clear(void);
 Word *wordlist_add(char *word, int row, int col);
 void wordlist_output(FILE *out);

@@ -6,14 +6,70 @@ static void get_anchors(Board board, int row, int anchors[SIZE]);
 static void get_crosschecks(Board board, int row, int crosschecks[SIZE]);
 static void get_leftparts(Board board, int row, int rack[26]);
 
+static void extend_right(Board board, char *partial, int row, int col, int
+                rack[26], int crosschecks[SIZE], Node *np);
+
 static void leftpartsgen(Node *np, int limit, int rack[26], int row, int col);
 static int bit(int word, int n);
 
+static int rack_count(int rack[26], char c);
+static void put_on_rack(int rack[26], char c);
+static void take_off_rack(int rack[26], char c);
+
 void movegen(Board board, int row, int rack[26]) {
         int crosschecks[SIZE];
+        Word *wp;
+        Node *np;
 
         get_crosschecks(board, row, crosschecks);
         get_leftparts(board, row, rack);
+        for (wp = wordlist; wp != NULL; wp = wp->next) {
+                np = trie_lookup(lexicon, wp->letters, NULL);
+                extend_right(board, wp->letters, wp->row, wp->col, rack,
+                                crosschecks, np);
+        }
+}
+
+static void extend_right(Board board, char *partial, int row, int col,
+                        int rack[26], int crosschecks[SIZE], Node *np) {
+        char c;
+        int len;
+
+        if (!filled(board, row, col)) {
+                if (np->end_of_word) {
+                        printf("Legal move: %s\n", partial);
+                } else {
+                        for (c = 'a'; c <= 'z'; c++) {
+                                if (node_child(np, c) == NULL)
+                                        continue;
+                                if (rack_count(rack, c)
+                                        && (bit(crosschecks[col], c-'a'))) {
+                                        take_off_rack(rack, c);
+                                        len = strlen(partial);
+                                        partial[len] = c;
+                                        partial[len+1] = '\0';
+                                        extend_right(board, partial, row,
+                                                        col+1, rack,
+                                                        crosschecks,
+                                                        node_child(np, c));
+                                        partial[len] = '\0';
+                                        put_on_rack(rack, c);
+                                }
+                        }
+                }
+
+        } else {
+                c = board[row][col];
+                if (node_child(np, c)) {
+                        len = strlen(partial);
+                        partial[len] = c;
+                        partial[len+1] = '\0';
+                        extend_right(board, partial, row, col+1, rack,
+                                        crosschecks, node_child(np, c));
+                        partial[len] = '\0';
+                        put_on_rack(rack, c);
+                }
+        }
 }
 
 static void get_leftparts(Board board, int row, int rack[26]) {

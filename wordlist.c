@@ -1,6 +1,6 @@
 #include "wordlist.h"
 
-static Word *wordlist = NULL;
+Word *wordlist = NULL;
 
 static Word *word_new(char *letters, int row, int col) {
         Word *word;
