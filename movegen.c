@@ -20,7 +20,7 @@ static void get_crosschecks(Board board, int row, int crosschecks[SIZE]);
 
 static char *letters = "abcdefghijklmnopqrstuvwxyz";
 
-void movegen(Board board, int row, int rack[26]) {
+Word *movegen(Board board, int row, int rack[26]) {
         int crosschecks[SIZE];
         Word *leftparts = NULL;
         Word *legalwords = NULL;
@@ -34,9 +34,8 @@ void movegen(Board board, int row, int rack[26]) {
                 extend_right(&legalwords, board, wp->letters, wp->row, wp->col,
                                 rack, crosschecks, np);
         }
-        wordlist_output(legalwords, stdout);
         wordlist_free(leftparts);
-        wordlist_free(legalwords);
+        return legalwords;
 }
 
 static void extend_right(Word **legalwords, Board board, char *partial,

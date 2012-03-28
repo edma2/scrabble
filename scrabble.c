@@ -19,6 +19,8 @@ Board board = {
 
 int main(void) {
         int rack[26] = {0};
+        Word *legalwords;
+
         rack['a'-'a'] = 1;
         rack['r'-'a'] = 2;
         rack['t'-'a'] = 1;
@@ -29,9 +31,10 @@ int main(void) {
                 return -1;
         }
 
-        movegen(board, 10, rack);
+        legalwords = movegen(board, 10, rack);
+        wordlist_output(legalwords, stdout);
 
+        wordlist_free(legalwords);
         lexicon_free();
-
         return 0;
 }

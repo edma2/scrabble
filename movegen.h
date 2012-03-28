@@ -6,6 +6,6 @@
 #include "lexicon.h"
 #include "wordlist.h"
 
-void movegen(Board board, int row, int rack[26]);
+Word *movegen(Board board, int row, int rack[26]);
 
 #endif
