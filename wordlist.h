@@ -10,11 +10,12 @@
 typedef struct Word Word;
 struct Word {
         char letters[SIZE+1];
+        int row, col;
         Word *next;
 };
 
 void wordlist_clear(void);
-Word *wordlist_add(char *word);
+Word *wordlist_add(char *word, int row, int col);
 void wordlist_output(FILE *out);
 
 #endif

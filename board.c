@@ -13,6 +13,15 @@ void get_downword(Board board, int row, int col, char *word) {
         *word = '\0';
 }
 
+void get_acrossword(Board board, int row, int col, char *word) {
+        for (; col < SIZE; col++) {
+                if (!filled(board, row, col))
+                        break;
+                *word++ = board[row][col];
+        }
+        *word = '\0';
+}
+
 int adj_to_tile(Board board, int row, int col) {
         return (col-1 >= 0 && filled(board, row, col-1))
             || (col+1 < SIZE && filled(board, row, col+1))

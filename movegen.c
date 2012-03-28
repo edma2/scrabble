@@ -4,16 +4,39 @@ static char *letters = "abcdefghijklmnopqrstuvwxyz";
 
 static void get_anchors(Board board, int row, int anchors[SIZE]);
 static void get_crosschecks(Board board, int row, int crosschecks[SIZE]);
-static void get_leftparts(Node *np, int limit, int rack[26]);
+static void get_leftparts(Board board, int row, int rack[26]);
+
+static void leftpartsgen(Node *np, int limit, int rack[26], int row, int col);
 static int bit(int word, int n);
 
 void movegen(Board board, int row, int rack[26]) {
+        get_leftparts(board, row, rack);
+}
+
+static void get_leftparts(Board board, int row, int rack[26]) {
         int anchors[SIZE];
         int crosschecks[SIZE];
+        int col, i, n;
+        char leftpart[SIZE+1];
 
         get_anchors(board, row, anchors);
         get_crosschecks(board, row, crosschecks);
-        get_leftparts(lexicon->root, 3, rack);
+
+        for (col = 0; col < SIZE; col++) {
+                if (!anchors[col])
+                        continue;
+                if (col > 0 && filled(board, row, col-1)) {
+                        for (i = col-1; i >= 0 && filled(board, row, i); i--)
+                                ;
+                        get_acrossword(board, row, i+1, leftpart);
+                        wordlist_add(leftpart, row, i+1);
+                } else {
+                        n = 0;
+                        for (i = col-1; i >= 0 && !filled(board, row, i); i--)
+                                n++;
+                        leftpartsgen(lexicon->root, n, rack, row, i+1);
+                }
+        }
 }
 
 static int bit(int word, int n) {
@@ -32,13 +55,13 @@ static void put_on_rack(int rack[26], char c) {
         rack[c-'a']++;
 }
 
-static void get_leftparts(Node *np, int limit, int rack[26]) {
+static void leftpartsgen(Node *np, int limit, int rack[26], int row, int col) {
         static char partial[SIZE+1];
         char c;
         int len;
 
         if (!limit) {
-                wordlist_add(partial);
+                wordlist_add(partial, row, col);
                 return;
         }
         for (c = 'a'; c <= 'z'; c++) {
@@ -48,7 +71,7 @@ static void get_leftparts(Node *np, int limit, int rack[26]) {
                 len = strlen(partial);
                 partial[len] = c;
                 partial[len+1] = '\0';
-                get_leftparts(node_child(np, c), limit-1, rack);
+                leftpartsgen(node_child(np, c), limit-1, rack, row, col);
                 partial[len] = '\0';
                 put_on_rack(rack, c);
         }
