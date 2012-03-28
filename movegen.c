@@ -1,13 +1,13 @@
 #include "movegen.h"
 
 WordList *wordlist_new(void) {
-        WordList *ml;
+        WordList *wl;
 
-        ml = malloc(sizeof(WordList));
-        if (ml == NULL)
+        wl = malloc(sizeof(WordList));
+        if (wl == NULL)
                 return NULL;
-        ml->head = NULL;
-        return ml;
+        wl->head = NULL;
+        return wl;
 }
 
 Word *word_new(char *letters) {
@@ -21,15 +21,15 @@ Word *word_new(char *letters) {
         return word;
 }
 
-Word *wordlist_add(WordList *ml, char *letters) {
+Word *wordlist_add(WordList *wl, char *letters) {
         Word *word;
 
         word = word_new(letters);
         if (word == NULL)
                 return NULL;
         /* Appending to front takes O(1) time */
-        word->next = ml->head;
-        ml->head = word;
+        word->next = wl->head;
+        wl->head = word;
         return word;
 }
 
