@@ -1,8 +1,11 @@
 #include "movegen.h"
 
+static char *letters = "abcdefghijklmnopqrstuvwxyz";
+
 static void get_anchors(Board board, int row, int anchors[SIZE]);
 static void get_crosschecks(Board board, int row, int crosschecks[SIZE]);
 static void get_leftparts(Node *np, int limit, int rack[26]);
+static int bit(int word, int n);
 
 void movegen(Board board, int row, int rack[26]) {
         int anchors[SIZE];
@@ -11,6 +14,10 @@ void movegen(Board board, int row, int rack[26]) {
         get_anchors(board, row, anchors);
         get_crosschecks(board, row, crosschecks);
         get_leftparts(lexicon->root, 3, rack);
+}
+
+static int bit(int word, int n) {
+        return word & (1<<n);
 }
 
 static int rack_count(int rack[26], char c) {
@@ -51,19 +58,15 @@ static void get_anchors(Board board, int row, int anchors[SIZE]) {
         int col;
 
         for (col = 0; col < SIZE; col++) {
-                if (board_covered(board, row, col)) {
+                if (filled(board, row, col)) {
                         anchors[col] = 0;
                         continue;
                 }
-                anchors[col] = board_leftof(board, row, col)
-                            || board_rightof(board, row, col)
-                            || board_below(board, row, col)
-                            || board_above(board, row, col);
+                anchors[col] = adj_to_tile(board, row, col);
         }
 }
 
 static int pivots(char *prefix, char *suffix) {
-        char *letters = "abcdefghijklmnopqrstuvwxyz";
         int i, p, pivots;
         char word[SIZE+1];
 
@@ -93,16 +96,16 @@ static void get_crosschecks(Board board, int row, int crosschecks[SIZE]) {
         int col, top;
 
         for (col = 0; col < SIZE; col++) {
-                if (board_covered(board, row, col)) {
+                if (filled(board, row, col)) {
                         crosschecks[col] = 0;
                         continue;
                 }
-                for (top = row; top > 0; top--) {
-                        if (!board_covered(board, top, col))
+                for (top = row-1; top > 0; top--) {
+                        if (!filled(board, top, col))
                                 break;
                 }
-                board_get_dw(board, top, col, prefix);
-                board_get_dw(board, row, col, suffix);
+                get_downword(board, top+1, col, prefix);
+                get_downword(board, row+1, col, suffix);
                 crosschecks[col] = pivots(prefix, suffix);
         }
 }

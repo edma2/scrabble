@@ -28,7 +28,7 @@ int main(void) {
                 return -1;
         }
 
-        movegen(board, 5, rack);
+        movegen(board, 8, rack);
         wordlist_output(stdout);
 
         lexicon_free();

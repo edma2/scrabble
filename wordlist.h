@@ -4,7 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "board.h" /* for SIZE */
+
+#include "board.h"
 
 typedef struct Word Word;
 struct Word {
