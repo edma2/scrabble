@@ -1,5 +1,40 @@
 #include "movegen.h"
 
+MoveList *movelist_new(void) {
+        MoveList *ml;
+
+        ml = malloc(sizeof(MoveList));
+        if (ml == NULL)
+                return NULL;
+        ml->root = NULL;
+        return ml;
+}
+
+Move *move_new(int row, int col, char *letters) {
+        Move *move;
+
+        move = malloc(sizeof(Move));
+        if (move == NULL)
+                return NULL;
+        move->row = row;
+        move->col = col;
+        strncpy(move->letters, letters, SIZE+1);
+        move->next = NULL;
+        return move;
+}
+
+Move *movelist_add(MoveList *ml, int row, int col, char *letters) {
+        Move *move;
+
+        move = move_new(row, col, letters);
+        if (move == NULL)
+                return NULL;
+        /* Appending to front takes O(1) time */
+        move->next = ml->root;
+        ml->root = move;
+        return move;
+}
+
 const char *letters = "abcdefghijklmnopqrstuvwxyz";
 
 /* Each element of this array represents the crosscheck for a square of some
