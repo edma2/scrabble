@@ -54,7 +54,6 @@ static void extend_right(Word **legalwords, Board board, char *partial,
                 extend_right(legalwords, board, partial, row, col+1, rack,
                                 crosschecks, node_child(np, c));
                 partial[len] = '\0';
-                put_on_rack(rack, c);
                 return;
         }
         if (np->end_of_word)
