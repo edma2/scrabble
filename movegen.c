@@ -7,6 +7,29 @@ const char *letters = "abcdefghijklmnopqrstuvwxyz";
  * string above. If bit @j is on, then the @letters[@j] is in the set. */
 int crosschecks[SIZE];
 
+int anchors(char *board, int row) {
+        int col, res;
+
+        for (col = res = 0; col < SIZE; col++) {
+                if (loc_has_tile(board, row, col))
+                        continue;
+                if (loc_adjacent_tile(board, row, col))
+                        res |= 1<<col;
+        }
+        return res;
+}
+
+int loc_adjacent_tile(char *board, int row, int col) {
+        return (loc_in_bounds(row-1, col)
+            && loc_has_tile(board, row-1, col))
+            || (loc_in_bounds(row+1, col)
+            && loc_has_tile(board, row+1, col))
+            || (loc_in_bounds(row, col-1)
+            && loc_has_tile(board, row, col-1))
+            || (loc_in_bounds(row, col+1)
+            && loc_has_tile(board, row, col+1));
+}
+
 /* Fills up crosschecks array for @jth row of @board */
 void do_crosschecks(Trie *trie, char *board, int row) {
         char prefix[SIZE];

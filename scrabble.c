@@ -1,5 +1,7 @@
 #include "scrabble.h"
 
+void print_crosschecks(void);
+
 int main(void) {
         Trie *trie;
         int nwords;
@@ -29,7 +31,18 @@ int main(void) {
 ...............\
 ...............";
 
-        do_crosschecks(trie, board, 6);
+        int i;
+        for (i = 0; i < SIZE; i++) {
+                do_crosschecks(trie, board, i);
+                anchors(board, i);
+        }
+
+        trie_free(trie);
+
+        return 0;
+}
+
+void print_crosschecks(void) {
         int i, j;
         for (i = 0; i < SIZE; i++) {
                 /* Not interesting */
@@ -40,8 +53,4 @@ int main(void) {
                                 printf("%c ,", letters[j]);
                 }
         }
-
-        trie_free(trie);
-
-        return 0;
 }
