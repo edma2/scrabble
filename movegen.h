@@ -5,24 +5,23 @@
 
 #define SIZE 15
 
-typedef struct Move Move;
-struct Move {
-        int row, col;
+typedef struct Word Word;
+struct Word {
         char letters[SIZE+1]; /* '\0' terminated */
-        Move *next;
+        Word *next;
 };
 
-typedef struct MoveList MoveList;
-struct MoveList {
-        Move *root;
+typedef struct WordList WordList;
+struct WordList {
+        Word *head;
 };
 
 extern int crosschecks[SIZE];
 extern const char *letters;
 
-MoveList *movelist_new(void);
-Move *move_new(int row, int col, char *letters);
-Move *movelist_add(MoveList *ml, int row, int col, char *letters);
+WordList *wordlist_new(void);
+Word *move_new(char *letters);
+Word *wordlist_add(WordList *ml, char *letters);
 
 int anchors(char *board, int row);
 void do_crosschecks(Trie *trie, char *board, int row);

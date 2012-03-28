@@ -1,37 +1,35 @@
 #include "movegen.h"
 
-MoveList *movelist_new(void) {
-        MoveList *ml;
+WordList *wordlist_new(void) {
+        WordList *ml;
 
-        ml = malloc(sizeof(MoveList));
+        ml = malloc(sizeof(WordList));
         if (ml == NULL)
                 return NULL;
-        ml->root = NULL;
+        ml->head = NULL;
         return ml;
 }
 
-Move *move_new(int row, int col, char *letters) {
-        Move *move;
+Word *move_new(char *letters) {
+        Word *move;
 
-        move = malloc(sizeof(Move));
+        move = malloc(sizeof(Word));
         if (move == NULL)
                 return NULL;
-        move->row = row;
-        move->col = col;
         strncpy(move->letters, letters, SIZE+1);
         move->next = NULL;
         return move;
 }
 
-Move *movelist_add(MoveList *ml, int row, int col, char *letters) {
-        Move *move;
+Word *wordlist_add(WordList *ml, char *letters) {
+        Word *move;
 
-        move = move_new(row, col, letters);
+        move = move_new(letters);
         if (move == NULL)
                 return NULL;
         /* Appending to front takes O(1) time */
-        move->next = ml->root;
-        ml->root = move;
+        move->next = ml->head;
+        ml->head = move;
         return move;
 }
 
