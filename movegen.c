@@ -16,7 +16,7 @@ void movegen(Board board, int row, int rack[26]) {
 static void get_leftparts(Board board, int row, int rack[26]) {
         int anchors[SIZE];
         int crosschecks[SIZE];
-        int col, i, n;
+        int col, i;
         char leftpart[SIZE+1];
 
         get_anchors(board, row, anchors);
@@ -31,10 +31,10 @@ static void get_leftparts(Board board, int row, int rack[26]) {
                         get_acrossword(board, row, i+1, leftpart);
                         wordlist_add(leftpart, row, i+1);
                 } else {
-                        n = 0;
-                        for (i = col-1; i >= 0 && !filled(board, row, i); i--)
-                                n++;
-                        leftpartsgen(lexicon->root, n, rack, row, i+1);
+                        int nonanch = 0;
+                        for (i = col-1; i >= 0 && !anchors[i]; i--)
+                                nonanch++;
+                        leftpartsgen(lexicon->root, nonanch, rack, row, i+1);
                 }
         }
 }
