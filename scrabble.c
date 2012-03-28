@@ -43,6 +43,7 @@ int main(void) {
                 printf("%s\n", wp->letters);
 
         trie_free(lexicon);
+        wordlist_free(&left_parts);
 
         return 0;
 }

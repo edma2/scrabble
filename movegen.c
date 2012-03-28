@@ -48,6 +48,15 @@ void do_left_parts(Node *np, int limit, int tiles[26]) {
         }
 }
 
+void wordlist_free(WordList *wl) {
+        Word *word, *next;
+
+        for (word = wl->head; word != NULL; word = next) {
+                next = word->next;
+                free(word);
+        }
+}
+
 WordList *wordlist_new(void) {
         WordList *wl;
 

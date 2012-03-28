@@ -19,6 +19,7 @@ struct WordList {
 WordList *wordlist_new(void);
 Word *word_new(char *letters);
 Word *wordlist_add(WordList *ml, char *letters);
+void wordlist_free(WordList *wl);
 
 extern const char *letters;
 
