@@ -20,7 +20,7 @@ extern int crosschecks[SIZE];
 extern const char *letters;
 
 WordList *wordlist_new(void);
-Word *move_new(char *letters);
+Word *word_new(char *letters);
 Word *wordlist_add(WordList *ml, char *letters);
 
 int anchors(char *board, int row);

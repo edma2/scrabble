@@ -10,27 +10,27 @@ WordList *wordlist_new(void) {
         return ml;
 }
 
-Word *move_new(char *letters) {
-        Word *move;
+Word *word_new(char *letters) {
+        Word *word;
 
-        move = malloc(sizeof(Word));
-        if (move == NULL)
+        word = malloc(sizeof(Word));
+        if (word == NULL)
                 return NULL;
-        strncpy(move->letters, letters, SIZE+1);
-        move->next = NULL;
-        return move;
+        strncpy(word->letters, letters, SIZE+1);
+        word->next = NULL;
+        return word;
 }
 
 Word *wordlist_add(WordList *ml, char *letters) {
-        Word *move;
+        Word *word;
 
-        move = move_new(letters);
-        if (move == NULL)
+        word = word_new(letters);
+        if (word == NULL)
                 return NULL;
         /* Appending to front takes O(1) time */
-        move->next = ml->head;
-        ml->head = move;
-        return move;
+        word->next = ml->head;
+        ml->head = word;
+        return word;
 }
 
 const char *letters = "abcdefghijklmnopqrstuvwxyz";
