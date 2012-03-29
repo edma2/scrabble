@@ -21,8 +21,10 @@ int main(void) {
 
         for (row = 0; row < SIZE; row++)
                 movegen(row);
-        replay_moves(stdout);
+        Word *best = bestmove();
+        printf("(%d, %d): %s = %d points\n", best->col, best->row, best->letters, best->score);
 
+        wordlist_free(legalwords);
         lexicon_free();
 
         return 0;

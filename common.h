@@ -71,5 +71,6 @@ void trie_free(Trie *trie);
 Word *wordlist_add(Word **wl, char *word, int row, int col, int score);
 void wordlist_free(Word *wl);
 void wordlist_output(Word *wl, FILE *out);
+Word *bestmove(void);
 
 #endif

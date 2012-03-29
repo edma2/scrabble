@@ -1,5 +1,18 @@
 #include "common.h"
 
+Word *bestmove(void) {
+        Word *wp, *best = NULL;;
+        int max = 0;
+
+        for (wp = legalwords; wp != NULL; wp = wp->next) {
+                if (wp->score > max) {
+                        max = wp->score;
+                        best = wp;
+                }
+        }
+        return best;
+}
+
 static Word *word_new(char *letters, int row, int col, int score) {
         Word *word;
 
