@@ -118,7 +118,7 @@ static int crosssums(char *word, int row, int col) {
         int sum, mult;
 
         for (sum = 0; *word != '\0'; word++, col++) {
-                if (!crosschecks[col])
+                if (!below_tile(row, col) && !above_tile(row, col))
                         continue;
                 mult = multipliers[row][col];
                 if (mult <= 3)
