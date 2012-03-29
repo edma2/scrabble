@@ -28,7 +28,7 @@ static bool rack_has(char c) {
 }
 
 static bool rack_has_blank(void) {
-        return rack[26] > 0;
+        return rack[BLANK-'a'] > 0;
 }
 
 static void extright_with_char(Node *np, int row, int col, char c);
