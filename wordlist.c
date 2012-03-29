@@ -1,4 +1,4 @@
-#include "wordlist.h"
+#include "common.h"
 
 static Word *word_new(char *letters, int row, int col) {
         Word *word;

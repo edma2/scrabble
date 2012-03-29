@@ -1,4 +1,4 @@
-#include "lexicon.h"
+#include "common.h"
 
 Trie *lexicon;
 

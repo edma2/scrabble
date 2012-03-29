@@ -1,4 +1,4 @@
-#include "trie.h"
+#include "common.h"
 
 /* Returns a new Trie or NULL on failure */
 Trie *trie_new(void) {
