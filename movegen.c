@@ -43,7 +43,7 @@ static void extright(Node *np, int row, int col, bool anchor) {
         }
         if (!anchor && np->end_of_word) {
                 int start = col - strlen(partial);
-                wordlist_add(&legalwords, partial, row, start);
+                wordlist_add(&legalwords, partial, row, start, 0);
         }
         for (c = 'a'; c <= 'z'; c++) {
                 if (!in_crosscheck_set(col, c))

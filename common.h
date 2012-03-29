@@ -30,6 +30,7 @@ struct Word {
         char letters[SIZE+1];
         int row, col;
         Word *next;
+        int score;
 };
 
 extern int rack[27];
@@ -64,7 +65,7 @@ Node *trie_lookup(Trie *trie, char *s, char **si);
 Node *trie_insert(Trie *trie, char *s);
 void trie_free(Trie *trie);
 
-Word *wordlist_add(Word **wl, char *word, int row, int col);
+Word *wordlist_add(Word **wl, char *word, int row, int col, int score);
 void wordlist_free(Word *wl);
 void wordlist_output(Word *wl, FILE *out);
 

@@ -1,6 +1,6 @@
 #include "common.h"
 
-static Word *word_new(char *letters, int row, int col) {
+static Word *word_new(char *letters, int row, int col, int score) {
         Word *word;
 
         word = malloc(sizeof(Word));
@@ -9,6 +9,7 @@ static Word *word_new(char *letters, int row, int col) {
         strncpy(word->letters, letters, SIZE+1);
         word->row = row;
         word->col = col;
+        word->score = score;
         word->next = NULL;
         return word;
 }
@@ -22,10 +23,10 @@ void wordlist_free(Word *wl) {
         }
 }
 
-Word *wordlist_add(Word **wl, char *word, int row, int col) {
+Word *wordlist_add(Word **wl, char *word, int row, int col, int score) {
         Word *wp;
 
-        wp = word_new(word, row, col);
+        wp = word_new(word, row, col, score);
         if (wp == NULL)
                 return NULL;
         wp->next = *wl;
