@@ -54,7 +54,8 @@ static void extright(Node *np, int row, int col, bool anchor) {
                 if (rack_has(c) || rack_has_blank()) {
                         tile = (!rack_has(c) && rack_has_blank()) ? BLANK : c;
                         rack_remove(tile);
-                        extright_with_char(np, row, col, c);
+                        if (col < SIZE-1)
+                                extright_with_char(np, row, col, c);
                         rack_add(tile);
                 }
         }
