@@ -70,15 +70,19 @@ int values[27] = {
         10,/* Z */
         0};/* BLANK */
 
-int wordscore(char *word, int row, int col) {
+int wordscore(char *word, int row, int col, bool across) {
         int wscore, wmult, lmult, lscore, mult;
 
-        for (wscore = 0, wmult = 1; *word != '\0'; word++, col++) {
+        for (wscore = 0, wmult = 1; *word != '\0'; word++) {
                 mult = multipliers[row][col];
                 lscore = values[*word - 'a'];
-                lmult = (mult <= 3) ? multipliers[row][col] : 1;
+                lmult = (mult <= 3) ? mult : 1;
                 wscore += lscore * lmult;
                 wmult *= (mult > 3) ? mult-2 : 1;
+                if (across)
+                        col++;
+                else
+                        row++;
         }
         return wscore * wmult;
 }
@@ -99,6 +103,7 @@ void replay_moves(FILE *out) {
                         board[row][col] = *s;
                 }
                 board_output(out);
+                printf("%d points\n", wp->score);
                 printf("--------------------------------\n");
                 strncpy(board[row], saved, sizeof(saved));
         }

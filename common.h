@@ -37,6 +37,8 @@ extern int rack[27];
 extern Board board;
 extern Trie *lexicon;
 extern Word *legalwords;
+extern int multipliers[SIZE][SIZE];
+extern int values[27];
 
 int lexicon_init(char *path);
 int lexicon_contains(char *s);
@@ -53,7 +55,7 @@ bool adjtile(int row, int col);
 
 void replay_moves(FILE *out);
 void board_output(FILE *out);
-int wordscore(char *word, int row, int col);
+int wordscore(char *word, int row, int col, bool across);
 
 void movegen(int row);
 

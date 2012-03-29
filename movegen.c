@@ -33,6 +33,7 @@ static bool rack_has_blank(void) {
 
 static void extright_with_char(Node *np, int row, int col, char c);
 static bool in_crosscheck_set(int col, char c);
+static int crosssums(char *word, int row, int col);
 
 static void extright(Node *np, int row, int col, bool anchor) {
         char c, tile;
@@ -43,7 +44,9 @@ static void extright(Node *np, int row, int col, bool anchor) {
         }
         if (!anchor && np->end_of_word) {
                 int start = col - strlen(partial);
-                wordlist_add(&legalwords, partial, row, start, 0);
+                int score = wordscore(partial, row, start, true);
+                score += crosssums(partial, row, start);
+                wordlist_add(&legalwords, partial, row, start, score);
         }
         for (c = 'a'; c <= 'z'; c++) {
                 if (!in_crosscheck_set(col, c))
@@ -111,6 +114,21 @@ static void get_anchors(int row) {
 static uint32_t crosschecks[SIZE];
 static int crossscores[SIZE];
 
+static int crosssums(char *word, int row, int col) {
+        int sum, mult;
+
+        for (sum = 0; *word != '\0'; word++, col++) {
+                if (!crosschecks[col])
+                        continue;
+                mult = multipliers[row][col];
+                if (mult <= 3)
+                        sum += values[*word-'a']*mult+crossscores[col];
+                else
+                        sum += (values[*word-'a']+crossscores[col])*(mult-2);
+        }
+        return sum;
+}
+
 static bool in_crosscheck_set(int col, char c) {
         return crosschecks[col] & (1 << (c-'a'));
 }
@@ -159,8 +177,8 @@ static void get_crosschecks(int row) {
                 get_downword(prefixstart, col, prefix);
                 get_downword(suffixstart, col, suffix);
                 crosschecks[col] = pivots(prefix, suffix);
-                int prefixscore = wordscore(prefix, prefixstart, col);
-                int suffixscore = wordscore(suffix, suffixstart, col);
+                int prefixscore = wordscore(prefix, prefixstart, col, false);
+                int suffixscore = wordscore(suffix, suffixstart, col, false);
                 crossscores[col] = prefixscore + suffixscore;
         }
 }
