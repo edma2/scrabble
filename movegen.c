@@ -127,21 +127,23 @@ static int pivots(char *prefix, char *suffix) {
         return pivots;
 }
 
+static int startrow(int row, int col) {
+        for (; below_tile(row, col); row--)
+                ;
+        return row;
+}
+
 static void get_crosschecks(int row) {
         char prefix[SIZE+1];
         char suffix[SIZE+1];
-        int col, top;
+        int col;
 
         for (col = 0; col < SIZE; col++) {
                 if (filled(row, col)) {
                         crosschecks[col] = 0;
                         continue;
                 }
-                for (top = row; top > 0; top--) {
-                        if (!filled(top-1, col))
-                                break;
-                }
-                get_downword(top, col, prefix);
+                get_downword(startrow(row, col), col, prefix);
                 get_downword(row+1, col, suffix);
                 crosschecks[col] = pivots(prefix, suffix);
         }
