@@ -109,6 +109,7 @@ static void get_anchors(int row) {
 }
 
 static uint32_t crosschecks[SIZE];
+static int crossscores[SIZE];
 
 static bool in_crosscheck_set(int col, char c) {
         return crosschecks[col] & (1 << (c-'a'));
@@ -153,9 +154,14 @@ static void get_crosschecks(int row) {
                         crosschecks[col] = 0;
                         continue;
                 }
-                get_downword(startrow(row, col), col, prefix);
-                get_downword(row+1, col, suffix);
+                int prefixstart = startrow(row, col);
+                int suffixstart = row+1;
+                get_downword(prefixstart, col, prefix);
+                get_downword(suffixstart, col, suffix);
                 crosschecks[col] = pivots(prefix, suffix);
+                int prefixscore = wordscore(prefix, prefixstart, col);
+                int suffixscore = wordscore(suffix, suffixstart, col);
+                crossscores[col] = prefixscore + suffixscore;
         }
 }
 
