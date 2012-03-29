@@ -7,6 +7,7 @@
 #include <stdint.h>
 
 #define SIZE 15
+#define BLANK ('z'+1)
 
 typedef char Board[SIZE][SIZE+1];
 typedef int bool;
@@ -31,7 +32,7 @@ struct Word {
         Word *next;
 };
 
-extern int rack[26];
+extern int rack[27];
 extern Board board;
 extern Trie *lexicon;
 extern Word *legalwords;

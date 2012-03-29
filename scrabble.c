@@ -12,6 +12,7 @@ int main(void) {
         grab('t');
         grab('s');
         grab('p');
+        grab(BLANK);
 
         if (lexicon_init("dict.txt") < 0) {
                 perror("lexicon_init()");

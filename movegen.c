@@ -1,6 +1,6 @@
 #include "common.h"
 
-int rack[26];
+int rack[27]; /* last tile represents blank tile */
 Word *legalwords;
 
 static char partial[SIZE+1];
@@ -27,11 +27,15 @@ static bool rack_has(char c) {
         return rack[c-'a'] > 0;
 }
 
+static bool rack_has_blank(void) {
+        return rack[26] > 0;
+}
+
 static void extright_with_char(Node *np, int row, int col, char c);
 static bool in_crosscheck_set(int col, char c);
 
 static void extright(Node *np, int row, int col, bool anchor) {
-        char c;
+        char c, tile;
 
         if (filled(row, col)) {
                 extright_with_char(np, row, col, board[row][col]);
@@ -42,10 +46,13 @@ static void extright(Node *np, int row, int col, bool anchor) {
                 wordlist_add(&legalwords, partial, row, start);
         }
         for (c = 'a'; c <= 'z'; c++) {
-                if (rack_has(c) && in_crosscheck_set(col, c)) {
-                        rack_remove(c);
+                if (!in_crosscheck_set(col, c))
+                        continue;
+                if (rack_has(c) || rack_has_blank()) {
+                        tile = (!rack_has(c) && rack_has_blank()) ? BLANK : c;
+                        rack_remove(tile);
                         extright_with_char(np, row, col, c);
-                        rack_add(c);
+                        rack_add(tile);
                 }
         }
 }
@@ -62,7 +69,7 @@ static void extright_with_char(Node *np, int row, int col, char c) {
 }
 
 static void leftpart(Node *np, int limit, int row, int col) {
-        char c;
+        char c, tile;
 
         if (!limit) {
                 extright(np, row, col, true);
@@ -70,13 +77,16 @@ static void leftpart(Node *np, int limit, int row, int col) {
         }
         for (c = 'a'; c <= 'z'; c++) {
                 Node *child = node_child(np, c);
-                if (child == NULL || !rack_has(c))
+                if (child == NULL)
                         continue;
-                rack_remove(c);
-                partial_push(c);
-                leftpart(child, limit-1, row, col);
-                partial_pop();
-                rack_add(c);
+                if (rack_has(c) || rack_has_blank()) {
+                        tile = (!rack_has(c) && rack_has_blank()) ? BLANK : c;
+                        rack_remove(tile);
+                        partial_push(c);
+                        leftpart(child, limit-1, row, col);
+                        partial_pop();
+                        rack_add(tile);
+                }
         }
 }
 
