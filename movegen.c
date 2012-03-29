@@ -115,16 +115,19 @@ static uint32_t crosschecks[SIZE];
 static int crossscores[SIZE];
 
 static int crosssums(char *word, int row, int col) {
-        int sum, mult;
+        int sum;
 
         for (sum = 0; *word != '\0'; word++, col++) {
+                int lscore, wscore, wmult, lmult;
+
                 if (!below_tile(row, col) && !above_tile(row, col))
                         continue;
-                mult = multipliers[row][col];
-                if (mult <= 3)
-                        sum += values[*word-'a']*mult+crossscores[col];
-                else
-                        sum += (values[*word-'a']+crossscores[col])*(mult-2);
+                int mult = multipliers[row][col];
+                lscore = values[*word-'a'];
+                lmult = (mult <= 3) ? mult : 1;
+                wmult = (mult > 3) ? mult-2 : 1;
+                wscore = (crossscores[col] + lscore * lmult) * wmult;
+                sum += wscore;
         }
         return sum;
 }
