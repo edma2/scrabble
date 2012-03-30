@@ -36,6 +36,7 @@ static bool rack_has_blank(void) {
 }
 
 static void extright_with_char(Node *np, int row, int col, char c);
+static bool in_crosscheck_set(int col, char c);
 
 static void extright(Node *np, int row, int col, bool anchor) {
         char c, tile;
@@ -95,9 +96,9 @@ static void leftpart(Node *np, int limit, int row, int col) {
         }
 }
 
-bool anchors[SIZE];
+static bool anchors[SIZE];
 
-bool in_anchors_set(int col) {
+static bool in_anchors_set(int col) {
         return anchors[col];
 }
 
@@ -113,9 +114,9 @@ static void get_anchors(int row) {
         }
 }
 
-uint32_t crosschecks[SIZE];
+static uint32_t crosschecks[SIZE];
 
-bool in_crosscheck_set(int col, char c) {
+static bool in_crosscheck_set(int col, char c) {
         return crosschecks[col] & (1 << (c-'a'));
 }
 
