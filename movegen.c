@@ -115,6 +115,7 @@ static void get_anchors(int row) {
 }
 
 static uint32_t crosschecks[SIZE];
+static int crosssums[SIZE];
 
 static bool in_crosscheck_set(int col, char c) {
         return crosschecks[col] & (1 << (c-'a'));
@@ -156,6 +157,8 @@ static void get_crosschecks(int row) {
                 get_downword_above(row, col, prefix);
                 get_downword_below(row, col, suffix);
                 crosschecks[col] = pivots(prefix, suffix);
+                crosssums[col] = downword_score_above(row, col, prefix) +
+                        downword_score_below(row, col, suffix);
         }
 }
 

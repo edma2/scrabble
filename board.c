@@ -138,10 +138,24 @@ void get_acrossword_left(int row, int col, char *word) {
         get_acrossword(row, col, word);
 }
 
-void get_downword_above(int row, int col, char *word) {
+static int downword_above_startrow(int row, int col) {
         for (; below_tile(row, col); row--)
                 ;
+        return row;
+}
+
+void get_downword_above(int row, int col, char *word) {
+        row = downword_above_startrow(row, col);
         get_downword(row, col, word);
+}
+
+int downword_score_above(int row, int col, char *word) {
+        row = downword_above_startrow(row, col);
+        return wordscore(word, row, col, false);
+}
+
+int downword_score_below(int row, int col, char *word) {
+        return wordscore(word, row+1, col, false);
 }
 
 void get_downword_below(int row, int col, char *word) {

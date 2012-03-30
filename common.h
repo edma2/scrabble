@@ -50,6 +50,9 @@ void get_acrossword_left(int row, int col, char *word);
 void get_downword_above(int row, int col, char *word);
 void get_downword_below(int row, int col, char *word);
 
+int downword_score_above(int row, int col, char *word);
+int downword_score_below(int row, int col, char *word);
+
 bool filled(int row, int col);
 bool rightof_tile(int row, int col);
 bool leftof_tile(int row, int col);
