@@ -33,6 +33,9 @@ struct Word {
         int score;
 };
 
+extern bool anchors[SIZE];
+extern uint32_t crosschecks[SIZE];
+
 extern int rack[27];
 extern Board board;
 extern Trie *lexicon;
@@ -44,9 +47,16 @@ int lexicon_init(char *path);
 int lexicon_contains(char *s);
 void lexicon_free(void);
 
-bool filled(int row, int col);
+bool in_crosscheck_set(int col, char c);
+bool in_anchors_set(int col);
+
 void get_downword(int row, int col, char *word);
 void get_acrossword(int row, int col, char *word);
+void get_acrossword_left(int row, int col, char *word);
+void get_downword_above(int row, int col, char *word);
+void get_downword_below(int row, int col, char *word);
+
+bool filled(int row, int col);
 bool rightof_tile(int row, int col);
 bool leftof_tile(int row, int col);
 bool above_tile(int row, int col);

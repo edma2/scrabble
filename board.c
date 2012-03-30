@@ -1,21 +1,22 @@
 #include "common.h"
 
 Board board = {
+       /*0123456789!@#$%*/
 /* 0 */ "...............",
 /* 1 */ "...............",
 /* 2 */ "...............",
 /* 3 */ "...............",
 /* 4 */ "...............",
 /* 5 */ "...............",
-/* 6 */ "...............",
-/* 7 */ "..r.....g......",
-/* 8 */ "..at....o......",
-/* 9 */ "..t.....o......",
-/*10 */ "........d......",
-/*11 */ "...............",
-/*12 */ "...............",
-/*13 */ "...............",
-/*14 */ "..............."};
+/* 6 */ "..........p...f",
+/* 7 */ ".......airier.l",
+/* 8 */ "..........l...a",
+/* 9 */ ".........feet.s",
+/*10 */ "............o.h",
+/*11 */ "..........mopey",
+/*12 */ "..........e.e..",
+/*13 */ ".........rated.",
+/*14 */ "..........na..."};
 
 /*
  * 1 = normal
@@ -75,10 +76,10 @@ int wordscore(char *word, int row, int col, bool across) {
 
         for (wscore = 0, wmult = 1; *word != '\0'; word++) {
                 mult = multipliers[row][col];
+                lmult = (!filled(row, col) && mult <= 3) ? mult : 1;
+                wmult *= (!filled(row, col) && mult > 3) ? mult-2 : 1;
                 lscore = values[*word - 'a'];
-                lmult = (mult <= 3) ? mult : 1;
                 wscore += lscore * lmult;
-                wmult *= (mult > 3) ? mult-2 : 1;
                 if (across)
                         col++;
                 else
@@ -120,21 +121,31 @@ bool filled(int row, int col) {
 }
 
 void get_downword(int row, int col, char *word) {
-        for (; row < SIZE; row++) {
-                if (!filled(row, col))
-                        break;
+        for (; filled(row, col); row++)
                 *word++ = board[row][col];
-        }
         *word = '\0';
 }
 
 void get_acrossword(int row, int col, char *word) {
-        for (; col < SIZE; col++) {
-                if (!filled(row, col))
-                        break;
+        for (; filled(row, col); col++)
                 *word++ = board[row][col];
-        }
         *word = '\0';
+}
+
+void get_acrossword_left(int row, int col, char *word) {
+        for (; rightof_tile(row, col); col--)
+                ;
+        get_acrossword(row, col, word);
+}
+
+void get_downword_above(int row, int col, char *word) {
+        for (; below_tile(row, col); row--)
+                ;
+        get_downword(row, col, word);
+}
+
+void get_downword_below(int row, int col, char *word) {
+        get_downword(row+1, col, word);
 }
 
 bool rightof_tile(int row, int col) {

@@ -7,12 +7,13 @@ void grab(char c) {
 int main(void) {
         int row;
 
-        grab('a');
-        grab('r');
+        grab('i');
         grab('t');
-        grab('s');
-        grab('p');
-        grab(BLANK);
+        grab('t');
+        grab('t');
+        grab('v');
+        grab('u');
+        grab('w');
 
         if (lexicon_init("dict.txt") < 0) {
                 perror("lexicon_init()");
@@ -21,8 +22,8 @@ int main(void) {
 
         for (row = 0; row < SIZE; row++)
                 movegen(row);
-        Word *best = bestmove();
-        printf("(%d, %d): %s = %d points\n", best->col, best->row, best->letters, best->score);
+
+        replay_moves(stdout);
 
         wordlist_free(legalwords);
         lexicon_free();
