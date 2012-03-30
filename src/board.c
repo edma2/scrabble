@@ -105,7 +105,7 @@ void board_flip(void) {
 void replay_moves(FILE *out) {
         Word *wp;
         char *s;
-        char saved[SIZE+1];
+        char saved[MAXWORD];
         int col, row;
 
         for (wp = legalwords; wp != NULL; wp = wp->next) {

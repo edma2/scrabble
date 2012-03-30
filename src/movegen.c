@@ -3,7 +3,7 @@
 int rack[27] = {0}; /* last tile represents blank tile */
 Word *legalwords;
 
-static char partial[SIZE+1];
+static char partial[MAXWORD];
 static uint32_t crosschecks[SIZE];
 static int crosssums[SIZE];
 static bool anchors[SIZE];
@@ -172,7 +172,7 @@ static bool in_crosscheck_set(int col, char c) {
 
 static int pivots(char *prefix, char *suffix) {
         int i, p, pivots;
-        char word[SIZE+1];
+        char word[MAXWORD];
         static char *letters = "abcdefghijklmnopqrstuvwxyz";
 
         if (*prefix == '\0' && *suffix == '\0')
@@ -194,8 +194,8 @@ static int pivots(char *prefix, char *suffix) {
 }
 
 static void get_crosschecks(int row) {
-        char prefix[SIZE+1];
-        char suffix[SIZE+1];
+        char prefix[MAXWORD];
+        char suffix[MAXWORD];
         int col;
 
         for (col = 0; col < SIZE; col++) {

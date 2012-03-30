@@ -19,7 +19,7 @@ static Word *word_new(char *letters, int row, int col, int score) {
         word = malloc(sizeof(Word));
         if (word == NULL)
                 return NULL;
-        strncpy(word->letters, letters, SIZE+1);
+        strncpy(word->letters, letters, MAXWORD);
         word->row = row;
         word->col = col;
         word->score = score;

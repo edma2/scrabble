@@ -7,9 +7,10 @@
 #include <stdint.h>
 
 #define SIZE 15
+#define MAXWORD (SIZE+1)
 #define BLANK ('z'+1)
 
-typedef char Board[SIZE][SIZE+1];
+typedef char Board[SIZE][MAXWORD];
 typedef int bool;
 enum {false, true};
 
@@ -27,7 +28,7 @@ struct Trie {
 
 typedef struct Word Word;
 struct Word {
-        char letters[SIZE+1];
+        char letters[MAXWORD];
         int row, col;
         Word *next;
         int score;
