@@ -63,6 +63,7 @@ bool nextto_tile(int row, int col);
 void replay_moves(FILE *out);
 void board_output(FILE *out);
 int wordscore(char *word, int row, int col, bool across);
+void board_flip(void);
 
 void movegen(int row);
 

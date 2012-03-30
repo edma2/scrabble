@@ -88,6 +88,20 @@ int wordscore(char *word, int row, int col, bool across) {
         return wscore * wmult;
 }
 
+void board_flip(void) {
+        Board transpose;
+        int row, col;
+
+        for (row = 0; row < SIZE; row++) {
+                for (col = 0; col < SIZE; col++)
+                        transpose[row][col] = board[col][row];
+        }
+        for (row = 0; row < SIZE; row++) {
+                for (col = 0; col < SIZE; col++)
+                        board[row][col] = transpose[row][col];
+        }
+}
+
 void replay_moves(FILE *out) {
         Word *wp;
         char *s;
