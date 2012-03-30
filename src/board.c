@@ -102,28 +102,6 @@ void board_flip(void) {
         }
 }
 
-void replay_moves(FILE *out) {
-        Word *wp;
-        char *s;
-        char saved[MAXWORD];
-        int col, row;
-
-        for (wp = legalwords; wp != NULL; wp = wp->next) {
-                row = wp->row;
-                col = wp->col;
-                strncpy(saved, board[row], sizeof(saved));
-                for (s = wp->letters; *s != '\0'; s++, col++) {
-                        if (filled(row, col))
-                                continue;
-                        board[row][col] = *s;
-                }
-                board_output(out);
-                printf("%d points\n", wp->score);
-                printf("--------------------------------\n");
-                strncpy(board[row], saved, sizeof(saved));
-        }
-}
-
 void board_output(FILE *out) {
         int row;
         for (row = 0; row < SIZE; row++)

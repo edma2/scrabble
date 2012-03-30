@@ -61,7 +61,6 @@ bool above_tile(int row, int col);
 bool below_tile(int row, int col);
 bool nextto_tile(int row, int col);
 
-void replay_moves(FILE *out);
 void board_output(FILE *out);
 int wordscore(char *word, int row, int col, bool across);
 void board_flip(void);
@@ -80,6 +79,5 @@ void trie_free(Trie *trie);
 Word *wordlist_add(Word **wl, char *word, int row, int col, int score);
 void wordlist_free(Word *wl);
 void wordlist_output(Word *wl, FILE *out);
-Word *bestmove(void);
 
 #endif

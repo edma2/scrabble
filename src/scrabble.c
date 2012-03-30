@@ -25,9 +25,7 @@ int main(void) {
         board_flip();
         for (row = 0; row < SIZE; row++)
                 movegen(row);
-
-        Word *bm = bestmove();
-        printf("%s@(%d, %d) = %d points\n", bm->letters, bm->col, bm->row, bm->score);
+        wordlist_output(legalwords, stdout);
 
         wordlist_free(legalwords);
         lexicon_free();
