@@ -23,7 +23,8 @@ int main(void) {
         for (row = 0; row < SIZE; row++)
                 movegen(row);
 
-        replay_moves(stdout);
+        Word *bm = bestmove();
+        printf("%s@(%d, %d) = %d points", bm->letters, bm->col, bm->row, bm->score);
 
         wordlist_free(legalwords);
         lexicon_free();

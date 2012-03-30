@@ -35,8 +35,26 @@ static bool rack_has_blank(void) {
         return rack[BLANK-'a'] > 0;
 }
 
+static uint32_t crosschecks[SIZE];
+static int crosssums[SIZE];
+
 static void extright_with_char(Node *np, int row, int col, char c);
 static bool in_crosscheck_set(int col, char c);
+
+static int crossscore(char *word, int row, int col) {
+        int sum, mult;
+
+        for (sum = 0; *word != '\0'; word++, col++) {
+                if (!crosssums[col])
+                        continue;
+                mult = multipliers[row][col];
+                if (mult <= 3)
+                        sum += values[*word-'a']*mult + crosssums[col];
+                else
+                        sum += (values[*word-'a'] + crosschecks[col])*(mult-2);
+        }
+        return sum;
+}
 
 static void extright(Node *np, int row, int col, bool anchor) {
         char c, tile;
@@ -48,6 +66,7 @@ static void extright(Node *np, int row, int col, bool anchor) {
         if (!anchor && np->end_of_word) {
                 int start = col - strlen(partial);
                 int score = wordscore(partial, row, start, true);
+                score += crossscore(partial, row, start);
                 wordlist_add(&legalwords, partial, row, start, score);
         }
         for (c = 'a'; c <= 'z'; c++) {
@@ -114,9 +133,6 @@ static void get_anchors(int row) {
         }
 }
 
-static uint32_t crosschecks[SIZE];
-static int crosssums[SIZE];
-
 static bool in_crosscheck_set(int col, char c) {
         return crosschecks[col] & (1 << (c-'a'));
 }
@@ -152,6 +168,7 @@ static void get_crosschecks(int row) {
         for (col = 0; col < SIZE; col++) {
                 if (filled(row, col)) {
                         crosschecks[col] = 0;
+                        crosssums[col] = 0;
                         continue;
                 }
                 get_downword_above(row, col, prefix);
