@@ -4,6 +4,47 @@ int rack[27] = {0}; /* last tile represents blank tile */
 Word *legalwords;
 
 static char partial[SIZE+1];
+static uint32_t crosschecks[SIZE];
+static int crosssums[SIZE];
+static bool anchors[SIZE];
+
+static void partial_reset(void);
+static void partial_push(char c);
+static void partial_pop(void);
+static void rack_remove(char c);
+static void rack_add(char c);
+static bool rack_has(char c);
+static bool rack_has_blank(void);
+static void get_crosschecks(int row);
+static void get_anchors(int row);
+static void extright(Node *np, int row, int col, bool anchor);
+static void extright_with_char(Node *np, int row, int col, char c);
+static void leftpart(Node *np, int limit, int row, int col);
+static bool in_anchors_set(int col);
+static bool in_crosscheck_set(int col, char c);
+static int pivots(char *prefix, char *suffix);
+static int crossscore(char *word, int row, int col);
+
+void movegen(int row) {
+        int col, last_anchor;
+        Node *np;
+
+        get_anchors(row);
+        get_crosschecks(row);
+        for (last_anchor = col = 0; col < SIZE; col++) {
+                if (!in_anchors_set(col))
+                        continue;
+                if (rightof_tile(row, col)) {
+                        get_acrossword_left(row, col, partial);
+                        np = trie_lookup(lexicon, partial, NULL);
+                        extright(np, row, col, true);
+                        partial_reset();
+                } else {
+                        leftpart(lexicon->root, col-last_anchor, row, col);
+                }
+                last_anchor = col;
+        }
+}
 
 static void partial_reset(void) {
         partial[0] = '\0';
@@ -34,12 +75,6 @@ static bool rack_has(char c) {
 static bool rack_has_blank(void) {
         return rack[BLANK-'a'] > 0;
 }
-
-static uint32_t crosschecks[SIZE];
-static int crosssums[SIZE];
-
-static void extright_with_char(Node *np, int row, int col, char c);
-static bool in_crosscheck_set(int col, char c);
 
 static int crossscore(char *word, int row, int col) {
         int sum, mult;
@@ -115,8 +150,6 @@ static void leftpart(Node *np, int limit, int row, int col) {
         }
 }
 
-static bool anchors[SIZE];
-
 static bool in_anchors_set(int col) {
         return anchors[col];
 }
@@ -176,26 +209,5 @@ static void get_crosschecks(int row) {
                 crosschecks[col] = pivots(prefix, suffix);
                 crosssums[col] = downword_score_above(row, col, prefix) +
                         downword_score_below(row, col, suffix);
-        }
-}
-
-void movegen(int row) {
-        int col, last_anchor;
-        Node *np;
-
-        get_anchors(row);
-        get_crosschecks(row);
-        for (last_anchor = col = 0; col < SIZE; col++) {
-                if (!in_anchors_set(col))
-                        continue;
-                if (rightof_tile(row, col)) {
-                        get_acrossword_left(row, col, partial);
-                        np = trie_lookup(lexicon, partial, NULL);
-                        extright(np, row, col, true);
-                        partial_reset();
-                } else {
-                        leftpart(lexicon->root, col-last_anchor, row, col);
-                }
-                last_anchor = col;
         }
 }
