@@ -5,6 +5,10 @@ Word *legalwords;
 
 static char partial[SIZE+1];
 
+static void partial_reset(void) {
+        partial[0] = '\0';
+}
+
 static void partial_push(char c) {
         int len = strlen(partial);
         partial[len] = c;
@@ -167,10 +171,10 @@ void movegen(int row) {
                         get_acrossword_left(row, col, partial);
                         np = trie_lookup(lexicon, partial, NULL);
                         extright(np, row, col, true);
+                        partial_reset();
                 } else {
                         leftpart(lexicon->root, col-last_anchor, row, col);
                 }
                 last_anchor = col;
         }
-        partial[0] = '\0';
 }
