@@ -49,7 +49,7 @@ static int crossscore(char *word, int row, int col) {
                         continue;
                 mult = multipliers[row][col];
                 if (mult <= 3)
-                        sum += values[*word-'a']*mult + crosssums[col];
+                        sum += crosssums[col];
                 else
                         sum += (values[*word-'a'] + crosschecks[col])*(mult-2);
         }
