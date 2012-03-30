@@ -164,7 +164,7 @@ bool below_tile(int row, int col) {
         return row-1 >= 0 && filled(row-1, col);
 }
 
-bool adjtile(int row, int col) {
+bool nextto_tile(int row, int col) {
         return rightof_tile(row, col)
                 || leftof_tile(row, col)
                 || below_tile(row, col)

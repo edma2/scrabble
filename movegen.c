@@ -109,7 +109,7 @@ static void get_anchors(int row) {
                         anchors[col] = false;
                         continue;
                 }
-                anchors[col] = adjtile(row, col);
+                anchors[col] = nextto_tile(row, col);
         }
 }
 

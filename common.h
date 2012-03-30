@@ -61,7 +61,7 @@ bool rightof_tile(int row, int col);
 bool leftof_tile(int row, int col);
 bool above_tile(int row, int col);
 bool below_tile(int row, int col);
-bool adjtile(int row, int col);
+bool nextto_tile(int row, int col);
 
 void replay_moves(FILE *out);
 void board_output(FILE *out);
