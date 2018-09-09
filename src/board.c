@@ -125,7 +125,7 @@ void get_acrossword(int row, int col, char *word) {
 }
 
 void get_acrossword_left(int row, int col, char *word) {
-        for (; rightof_tile(row, col); col--)
+        for (; leftof_tile(row, col); col--)
                 ;
         get_acrossword(row, col, word);
 }
